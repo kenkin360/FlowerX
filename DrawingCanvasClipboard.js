@@ -1,4 +1,3 @@
-
 var DrawingCanvasClipboard=Function.extend(Object, function () {
 	var _=this(DrawingCanvasClipboard);
 	DrawingCanvasClipboard=_[DrawingCanvasClipboard];
@@ -10,12 +9,10 @@ var DrawingCanvasClipboard=Function.extend(Object, function () {
 		_(this).m_onModified=onModified;
 		_(this).m_getBaseDimensions=getBaseDimensions;
 		_(this).m_onToolChange=onToolChange;
-		_(this).m_payload=null;
-		_(this).m_pasteOffsetCount=0;
 	}
 
 	_['public'].HasContent=function () {
-		return _(this).m_payload!==null;
+		return DrawingCanvasClipboard.Shared.Payload!==null;
 	};
 
 	_['public'].Copy=async function () {
@@ -25,11 +22,11 @@ var DrawingCanvasClipboard=Function.extend(Object, function () {
 		var activeObject=canvas.getActiveObject();
 		if ((activeObject)&&(!activeObject.isUI)&&(!activeObject.isBackground)) {
 			var cloned=await activeObject.clone();
-			_(this).m_payload={
+			DrawingCanvasClipboard.Shared.Payload={
 				type: 'object'
 				, object: cloned
 			};
-			_(this).m_pasteOffsetCount=0;
+			DrawingCanvasClipboard.Shared.PasteOffsetCount=0;
 			return;
 		}
 		var selection=surface.Selection;
@@ -38,12 +35,12 @@ var DrawingCanvasClipboard=Function.extend(Object, function () {
 			if ((bbox)&&(bbox.width>0)&&(bbox.height>0)) {
 				var regionCanvas=this.ExtractSelectionRegionCanvas(selection, bbox);
 				if (regionCanvas) {
-					_(this).m_payload={
+					DrawingCanvasClipboard.Shared.Payload={
 						type: 'region'
 						, canvas: regionCanvas,
 						bbox
 					};
-					_(this).m_pasteOffsetCount=0;
+					DrawingCanvasClipboard.Shared.PasteOffsetCount=0;
 					return;
 				}
 			}
@@ -120,7 +117,7 @@ var DrawingCanvasClipboard=Function.extend(Object, function () {
 	_['public'].Paste=async function () {
 		var canvas=_(this).m_canvas;
 		var surface=_(this).m_surface;
-		var payload=_(this).m_payload;
+		var payload=DrawingCanvasClipboard.Shared.Payload;
 		if ((!payload)||(!canvas)) return;
 		if ((surface)&&(surface.Selection)) {
 			surface.Selection.Clear();
@@ -134,8 +131,8 @@ var DrawingCanvasClipboard=Function.extend(Object, function () {
 				onToolChange(pickTool);
 			}
 		}
-		_(this).m_pasteOffsetCount++;
-		var offset=_(this).m_pasteOffsetCount*20;
+		DrawingCanvasClipboard.Shared.PasteOffsetCount++;
+		var offset=DrawingCanvasClipboard.Shared.PasteOffsetCount*20;
 		if (payload.type==='region') {
 			var regionCanvas=payload.canvas;
 			var bbox=payload.bbox;
@@ -298,6 +295,5 @@ var DrawingCanvasClipboard=Function.extend(Object, function () {
 	_['private'].m_onModified=null;
 	_['private'].m_getBaseDimensions=null;
 	_['private'].m_onToolChange=null;
-	_['private'].m_payload=null;
-	_['private'].m_pasteOffsetCount=0;
+	DrawingCanvasClipboard.Shared={Payload: null, PasteOffsetCount: 0};
 });
