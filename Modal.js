@@ -506,46 +506,6 @@ var Modal=Function.extend(React.Component, function () {
 						className: 'flex items-center gap-2 pointer-events-none min-w-0'
 					},
 					React.createElement(
-						'svg',
-						{
-							className: 'w-4 h-4 shrink-0 text-[#0078d4]'
-							, viewBox: '0 0 24 24'
-							, fill: 'currentColor'
-						},
-						React.createElement('rect', {
-							x: '2'
-							, y: '2'
-							, width: '9'
-							, height: '9'
-							, rx: '1'
-							, fill: '#0078d4'
-						}),
-						React.createElement('rect', {
-							x: '13'
-							, y: '2'
-							, width: '9'
-							, height: '9'
-							, rx: '1'
-							, fill: '#0078d4'
-						}),
-						React.createElement('rect', {
-							x: '2'
-							, y: '13'
-							, width: '9'
-							, height: '9'
-							, rx: '1'
-							, fill: '#0078d4'
-						}),
-						React.createElement('rect', {
-							x: '13'
-							, y: '13'
-							, width: '9'
-							, height: '9'
-							, rx: '1'
-							, fill: '#0078d4'
-						})
-					),
-					React.createElement(
 						'span',
 						{
 							className: 'text-[12px] font-normal text-[#cccccc] font-[\'Segoe_UI\',sans-serif] tracking-normal truncate'
