@@ -111,7 +111,7 @@ var PromptBox=Function.extend(Object, function () {
 				return;
 			}
 			if (!media.mediaId) {
-				throw new Error('所選素材沒有 mediaId。');
+				throw new Error('The selected media has no mediaId.');
 			}
 			if (!media.base64) {
 				let content=await Flow.media.getBase64({
@@ -134,7 +134,7 @@ var PromptBox=Function.extend(Object, function () {
 			mention.contentEditable='false';
 			mention.dataset.mentionId=media.mediaId;
 			mention.dataset.referenceType='media';
-			mention.textContent=media.name||'參考影像';
+			mention.textContent=media.name||'Reference image';
 			$this.InsertNode(mention);
 			$this.InsertNode(document.createTextNode(' '));
 			$this.m_callbacks.OnError(null);
@@ -161,10 +161,10 @@ var PromptBox=Function.extend(Object, function () {
 			button.type='button';
 			button.className='fx-reference';
 			button.dataset.removeReference=media.mediaId;
-			button.setAttribute('aria-label', '移除參考素材：'+(media.name||'影像'));
+			button.setAttribute('aria-label', 'Remove reference image: '+(media.name||'Image'));
 			let image=document.createElement('img');
 			image.src='data:'+media.mimeType+';base64,'+media.base64;
-			image.alt=media.name||'參考影像';
+			image.alt=media.name||'Reference image';
 			let icon=document.createElement('span');
 			icon.className='fx-reference-remove';
 			icon.textContent='\u2297';

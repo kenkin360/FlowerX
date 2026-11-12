@@ -36,19 +36,19 @@ var promptTemplate=`
 <div class="fx-prompt-box">
 	<div class="fx-prompt-top" data-prompt="top" hidden>
 		<div class="fx-prompt-references" data-prompt="references"></div>
-		<button type="button" data-prompt-action="clear" aria-label="清除提示詞與參考素材">\xD7</button>
+		<button type="button" data-prompt-action="clear" aria-label="Clear prompt and reference images">\xD7</button>
 	</div>
-	<div class="fx-prompt-input" data-prompt="input" data-empty="true" data-placeholder="要修改哪些地方？" role="textbox" aria-label="要修改哪些地方？" aria-multiline="true" contenteditable="true"></div>
+	<div class="fx-prompt-input" data-prompt="input" data-empty="true" data-placeholder="What would you like to change?" role="textbox" aria-label="What would you like to change?" aria-multiline="true" contenteditable="true"></div>
 	<div class="fx-prompt-bottom">
-		<button type="button" class="fx-prompt-circle" data-prompt-action="add" aria-label="加入參考素材">+</button>
-		<button type="button" class="fx-settings-trigger" data-prompt-action="settings" aria-label="模型與影像比例" aria-expanded="false"><span data-prompt="summary"></span><span class="material-symbols-outlined" data-prompt="ratio-icon" style="font-size:16px">crop_original</span></button>
-		<button type="button" class="fx-prompt-circle" data-prompt-action="generate" aria-label="開始生成" disabled><span class="material-symbols-outlined" data-prompt="generate-icon">arrow_forward</span></button>
+		<button type="button" class="fx-prompt-circle" data-prompt-action="add" aria-label="Add reference image">+</button>
+		<button type="button" class="fx-settings-trigger" data-prompt-action="settings" aria-label="Model and image ratio" aria-expanded="false"><span data-prompt="summary"></span><span class="material-symbols-outlined" data-prompt="ratio-icon" style="font-size:16px">crop_original</span></button>
+		<button type="button" class="fx-prompt-circle" data-prompt-action="generate" aria-label="Generate" disabled><span class="material-symbols-outlined" data-prompt="generate-icon">arrow_forward</span></button>
 	</div>
 	<div class="fx-prompt-error" data-prompt="error" role="status" hidden></div>
 </div>
 <div class="fx-prompt-settings" data-prompt="settings" hidden>
-	<div class="fx-prompt-aspects" role="radiogroup" aria-label="生成影像比例">
-		<button type="button" class="fx-aspect" data-aspect="original" data-icon="crop_original" role="radio" aria-checked="true"><span class="material-symbols-outlined">crop_original</span>原圖</button>
+	<div class="fx-prompt-aspects" role="radiogroup" aria-label="Generated image aspect ratio">
+		<button type="button" class="fx-aspect" data-aspect="original" data-icon="crop_original" role="radio" aria-checked="true"><span class="material-symbols-outlined">crop_original</span>Original</button>
 		<button type="button" class="fx-aspect" data-aspect="16:9" data-icon="crop_16_9" role="radio" aria-checked="false"><span class="material-symbols-outlined">crop_16_9</span>16:9</button>
 		<button type="button" class="fx-aspect" data-aspect="4:3" data-icon="crop_landscape" role="radio" aria-checked="false"><span class="material-symbols-outlined">crop_landscape</span>4:3</button>
 		<button type="button" class="fx-aspect" data-aspect="1:1" data-icon="crop_square" role="radio" aria-checked="false"><span class="material-symbols-outlined">crop_square</span>1:1</button>
@@ -64,14 +64,14 @@ var promptTemplate=`
 		<button type="button" class="fx-aspect" data-aspect="8:1" data-icon="crop_landscape" role="radio" aria-checked="false"><span class="material-symbols-outlined">crop_landscape</span>8:1</button>
 		<button type="button" class="fx-aspect" data-aspect="21:9" data-icon="crop_landscape" role="radio" aria-checked="false"><span class="material-symbols-outlined">crop_landscape</span>21:9</button>
 	</div>
-	<div class="fx-prompt-resolutions" role="radiogroup" aria-label="輸出解析度">
+	<div class="fx-prompt-resolutions" role="radiogroup" aria-label="Output resolution">
 		<button type="button" class="fx-resolution" data-resolution="Default" role="radio" aria-checked="true">Default</button>
 		<button type="button" class="fx-resolution" data-resolution="2K" role="radio" aria-checked="false">2K</button>
 		<button type="button" class="fx-resolution" data-resolution="4K" role="radio" aria-checked="false">4K</button>
 		<button type="button" class="fx-resolution" data-resolution="8K" role="radio" aria-checked="false">8K</button>
 	</div>
 	<button type="button" class="fx-model-trigger" data-prompt-action="models" aria-haspopup="listbox" aria-expanded="false"><span data-prompt="model"></span><span>\u25BE</span></button>
-	<div class="fx-model-menu" data-prompt="models" role="listbox" aria-label="選取模型" hidden>
+	<div class="fx-model-menu" data-prompt="models" role="listbox" aria-label="Select model" hidden>
 		<button type="button" class="fx-model-option" data-model="\u{1F34C} Nano Banana Pro" role="option" aria-selected="false">\u{1F34C} Nano Banana Pro</button>
 		<button type="button" class="fx-model-option" data-model="\u{1F34C} Nano Banana 2 Lite" role="option" aria-selected="false">\u{1F34C} Nano Banana 2 Lite</button>
 		<button type="button" class="fx-model-option" data-model="\u{1F34C} Nano Banana 2.1" role="option" aria-selected="true">\u{1F34C} Nano Banana 2.1</button>

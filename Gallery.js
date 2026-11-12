@@ -231,6 +231,11 @@ var Gallery=Function.extend(React.Component, function () {
 					$this.OpenSourceList();
 				}
 			}
+			else if (action==='generate-all') {
+				for (let editorRef of $this.m_editorRefs.values()) {
+					editorRef.current?.Generate();
+				}
+			}
 			else if (action==='load') {
 				Editor.SelectLocalFile(function (file) {
 					$this.OpenEditorWithImage(null).then(function (modalId) {

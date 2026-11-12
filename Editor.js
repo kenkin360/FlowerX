@@ -66,6 +66,7 @@ var Editor=Function.extend(React.Component, function () {
 			, isCanvasEmpty: true
 			, isCanvasBusy: false
 			, isGenerating: false
+			, generationProgress: null
 			, isDownloadingImage: false
 			, saveState: SaveState.Idle
 			, settingsAnchor: null
@@ -187,6 +188,7 @@ var Editor=Function.extend(React.Component, function () {
 			, OnError: (error)=>$this.m_promptBox?.ShowError(error)
 			, IsGenerating: state.isGenerating
 			, SetIsGenerating: (value)=>$this.SetStateValue('isGenerating', value)
+			, OnGenerationProgress: (value)=>$this.SetStateValue('generationProgress', value)
 			, IsDownloadingImage: state.isDownloadingImage
 			, SetIsDownloadingImage: (value)=>$this.SetStateValue('isDownloadingImage', value)
 			, SaveState: state.saveState
@@ -347,6 +349,25 @@ var Editor=Function.extend(React.Component, function () {
 		$this.Node('download-image-icon').ToggleClass('animate-spin', state.isDownloadingImage);
 		$this.Node('empty-hint').Show(!state.hasInteracted);
 		$this.Node('generating').Show(state.isGenerating);
+		let progress=state.generationProgress||{};
+		let determinate=Number.isFinite(progress.Total)&&progress.Total>0;
+		let percent=determinate?Math.max(0, Math.min(100, progress.Completed*100/progress.Total)):100;
+		$this.Node('generation-stage').SetText(progress.Stage||'Generating image');
+		$this.Node('generation-count').SetText(determinate?progress.Completed+' / '+progress.Total:'');
+		$this.Node('generation-progress').SetStyle('width', percent+'%');
+		$this.Node('generation-progress').ToggleClass('animate-pulse', !determinate);
+		let progressBar=$this.Node('generation-bar').GetElement();
+		progressBar?.setAttribute('aria-valuetext', progress.Stage||'Generating image');
+		if (determinate) {
+			progressBar?.setAttribute('aria-valuemin', '0');
+			progressBar?.setAttribute('aria-valuemax', String(progress.Total));
+			progressBar?.setAttribute('aria-valuenow', String(progress.Completed));
+		}
+		else {
+			progressBar?.removeAttribute('aria-valuemin');
+			progressBar?.removeAttribute('aria-valuemax');
+			progressBar?.removeAttribute('aria-valuenow');
+		}
 		$this.m_promptBox?.Update($this.m_actions.CanGenerate(), state.isGenerating);
 		$this.Node('shortcuts').Show(state.isShortcutsExpanded);
 	};
@@ -452,10 +473,7 @@ var Editor=Function.extend(React.Component, function () {
 				$this.UpdateActionContext();
 				$this.m_promptBox.Update($this.m_actions.CanGenerate(), $this.m_component.state.isGenerating);
 			}
-			, OnGenerate: ()=>{
-				$this.UpdateActionContext();
-				$this.m_actions.Refine();
-			}
+			, OnGenerate: ()=>$this.m_component.Generate()
 			, OnError: (error)=>$this.m_promptBox.ShowError(error)
 		});
 		$this.CreateActionButtons('tool-buttons', $this.m_toolBar.GetTools());
@@ -530,6 +548,12 @@ var Editor=Function.extend(React.Component, function () {
 		if (workspace) {
 			workspace.ResetZoom();
 		}
+	};
+
+	_['public'].Generate=function () {
+		let $this=_(this);
+		$this.UpdateActionContext();
+		return $this.m_actions.Refine();
 	};
 
 	_['public'].Open=async function (media) {

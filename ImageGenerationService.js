@@ -77,6 +77,14 @@ var ImageGenerationService=Function.extend(FlowImageService, function () {
 		return canvas;
 	};
 
+	_['private'].ReportProgress=function (options, stage, completed, total) {
+		options.OnGenerationProgress?.({
+			Stage: stage
+			, Completed: completed
+			, Total: total
+		});
+	};
+
 	_['private'].DrawFlipped=function (context, image, x, y, width, height, flipX, flipY) {
 		context.save();
 		context.translate(flipX?context.canvas.width:0, flipY?context.canvas.height:0);
@@ -388,22 +396,18 @@ var ImageGenerationService=Function.extend(FlowImageService, function () {
 		return {image: bestGenerated, plan, width: column.width, height: row.width};
 	};
 
-	_['private'].GenerateTiled=async function (x, options, cancellation) {
+	_['private'].GenerateTiled=async function (source, options, cancellation) {
 		let $this=_(this);
 		if ((!cv)||(!cv.Mat)||(!cv.MatVector)||(!cv.calcHist)||(!cv.matchTemplate)||(!cv.Canny)||(!cv.dilate)||(!cv.imread)) {
 			throw new Error('OpenCV.js is unavailable');
 		}
-		if (!x.HasDrawnContent()) {
-			throw new Error('Tiled generation requires an image in the editor');
-		}
-		let dimensions=x.GetDimensions();
-		let width=Math.round(dimensions.Width);
-		let height=Math.round(dimensions.Height);
+		let image=await $this.LoadImage(source.DataUrl);
+		let width=image.naturalWidth||image.width;
+		let height=image.naturalHeight||image.height;
 		let count=options.Resolution==='2K'?2:options.Resolution==='8K'?8:4;
 		if ((width<count)||(height<count)) {
 			throw new Error('Image is too small for tiled generation');
 		}
-		let image=await $this.LoadImage(x.GetCanvasData());
 		let sourcePlan=$this.FindBucket(width, height, options.AspectRatio||'original');
 		let aspectRatio=sourcePlan.GetAspectRatio();
 		let bucket=FlowImageService.Bucket[aspectRatio];
@@ -425,6 +429,7 @@ var ImageGenerationService=Function.extend(FlowImageService, function () {
 		let batches=[[], []];
 		let generatedPanels=Array(total).fill(null);
 		let failedPanels=[];
+		let completed=0;
 		let native=null;
 		try {
 			for (let index=0; index<total; index++) {
@@ -436,6 +441,7 @@ var ImageGenerationService=Function.extend(FlowImageService, function () {
 				preparedPanels[index]=$this.PreparePanel(paddedImage, overview, markerColor, columns, rows, column, row, aspectRatio);
 				batches[(row+column)%2].push(index);
 			}
+			$this.ReportProgress(options, 'Upscaling', completed, total);
 			for (let batch of batches) {
 				for (let index=batch.length-1; index>0; index--) {
 					let target=Math.floor(Math.random()*(index+1));
@@ -453,11 +459,16 @@ var ImageGenerationService=Function.extend(FlowImageService, function () {
 					jobs.push(
 						$this.GeneratePanel(paddedImage, preparedPanels[index], markerColor, aspectRatio, options, cancellation, cv).then(
 							function (panel) {
-								if (!cancellation.cancelled) generatedPanels[index]=panel;
+								if (!cancellation.cancelled) {
+									generatedPanels[index]=panel;
+									$this.ReportProgress(options, 'Upscaling', ++completed, total);
+								}
 							},
 							function (error) {
-								if (!cancellation.cancelled)
+								if (!cancellation.cancelled) {
 									failedPanels.push(`${row+1}-${column+1}: ${error instanceof Error?error.message:String(error)}`);
+									$this.ReportProgress(options, 'Upscaling', ++completed, total);
+								}
 							}
 						)
 					);
@@ -532,6 +543,20 @@ var ImageGenerationService=Function.extend(FlowImageService, function () {
 		}
 	};
 
+	_['private'].GenerateUpscaled=async function (x, options, cancellation) {
+		let $this=_(this);
+		$this.ReportProgress(options, 'Generating source image', 0, null);
+		let source=await $this.BaseGenerate.call(this, x, {
+			...options
+			, Resolution: 'Default'
+		});
+		if (cancellation.cancelled) {
+			throw new DOMException('Generation cancelled', 'AbortError');
+		}
+		$this.ReportProgress(options, 'Preparing upscale', 0, null);
+		return $this.GenerateTiled(source, options, cancellation);
+	};
+
 	_['public'].CancelGeneration=function () {
 		let cancellation=_(this).m_activeGeneration;
 		if ((!cancellation)||(cancellation.cancelled)) {
@@ -555,7 +580,8 @@ var ImageGenerationService=Function.extend(FlowImageService, function () {
 		});
 		$this.m_activeGeneration=cancellation;
 		try {
-			let operation=resolution==='Default'?$this.BaseGenerate.call(this, x, options):$this.GenerateTiled(x, options, cancellation);
+			$this.ReportProgress(options, 'Generating image', 0, null);
+			let operation=resolution==='Default'?$this.BaseGenerate.call(this, x, options):$this.GenerateUpscaled(x, options, cancellation);
 			let result=await Promise.race([
 				operation,
 				cancelled.then(function () {

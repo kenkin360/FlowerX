@@ -207,6 +207,11 @@ var AppActions=Function.extend(Object, function () {
 		}
 		_(this).m_isGenerating=true;
 		context.OnError(null);
+		context.OnGenerationProgress({
+			Stage: 'Generating image'
+			, Completed: 0
+			, Total: null
+		});
 		context.SetIsGenerating(true);
 		try {
 			let result=await _(this).m_service.Generate(workspace.Document, context);
@@ -221,6 +226,7 @@ var AppActions=Function.extend(Object, function () {
 		finally {
 			_(this).m_isGenerating=false;
 			context.SetIsGenerating(false);
+			context.OnGenerationProgress(null);
 		}
 	};
 	_['private'].m_isGenerating=false;
