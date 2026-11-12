@@ -62,7 +62,7 @@ var PromptBox=Function.extend(Object, function () {
 		let $this=_(this);
 		let text=$this.Node('input').innerText.trim();
 		$this.Node('input').dataset.empty=String(text.length===0);
-		$this.Node('top').hidden=text.length===0&&$this.m_references.length===0;
+		$this.Node('top').hidden=$this.m_references.length===0;
 		$this.m_callbacks.OnChange();
 	};
 
