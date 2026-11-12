@@ -22,5 +22,3 @@ var splashTemplate=`
 </main>
 `;
 
-export { splashTemplate };
-
