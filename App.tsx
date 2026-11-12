@@ -93,6 +93,10 @@ var App=Function.extend(React.Component, function () {
 		if (!splash) {
 			return;
 		}
+		let picture=root.querySelector('[data-splash="picture"]');
+		if ((picture)&&(picture.src!==this.m_loaded.splashPicture.src)) {
+			picture.src=this.m_loaded.splashPicture.src;
+		}
 		let progress=this.m_progress;
 		let total=progress.Total;
 		let completed=progress.Completed;
@@ -116,11 +120,6 @@ var App=Function.extend(React.Component, function () {
 			children.push(React.createElement('div', {
 				key: 'splash'
 				, ref: this.m_splashRef
-				, style: {
-					'--fx-splash-image': `url("${this.m_loaded.splashPicture.src}")`
-					, '--fx-splash-width': this.m_loaded.splashPicture.naturalWidth+'px'
-					, '--fx-splash-height': this.m_loaded.splashPicture.naturalHeight+'px'
-				}
 				, dangerouslySetInnerHTML: {
 					__html: this.m_loaded.splashTemplate
 				}
@@ -131,7 +130,10 @@ var App=Function.extend(React.Component, function () {
 				key: 'reload'
 				, style: {
 					position: 'fixed'
-					, inset: 0
+					, top: 0
+					, left: 0
+					, width: '100vw'
+					, height: '100vh'
 					, display: 'grid'
 					, placeItems: 'center'
 					, zIndex: 100
@@ -154,7 +156,10 @@ var App=Function.extend(React.Component, function () {
 		return React.createElement('div', {
 			style: {
 				position: 'fixed'
-				, inset: 0
+				, top: 0
+				, left: 0
+				, width: '100vw'
+				, height: '100vh'
 				, display: 'grid'
 				, placeItems: 'center'
 				, overflow: 'hidden'
