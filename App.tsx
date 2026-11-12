@@ -117,9 +117,9 @@ var App=Function.extend(React.Component, function () {
 				key: 'splash'
 				, ref: this.m_splashRef
 				, style: {
-					position: 'fixed'
-					, inset: 0
-					, '--fx-splash-image': `url("${this.m_loaded.splashPicture.src}")`
+					'--fx-splash-image': `url("${this.m_loaded.splashPicture.src}")`
+					, '--fx-splash-width': this.m_loaded.splashPicture.naturalWidth+'px'
+					, '--fx-splash-height': this.m_loaded.splashPicture.naturalHeight+'px'
 				}
 				, dangerouslySetInnerHTML: {
 					__html: this.m_loaded.splashTemplate
@@ -155,6 +155,9 @@ var App=Function.extend(React.Component, function () {
 			style: {
 				position: 'fixed'
 				, inset: 0
+				, display: 'grid'
+				, placeItems: 'center'
+				, overflow: 'hidden'
 			}
 		}, children);
 	};
