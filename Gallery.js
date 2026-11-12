@@ -239,11 +239,12 @@ var Gallery=Function.extend(React.Component, function () {
 				});
 			}
 			else if (action==='open') {
-				Editor.SelectFlowImage().then(function (media) {
-					if (media?.base64) {
-						$this.OpenEditorWithImage(null).then(function (modalId) {
-							$this.m_editorRefs.get(modalId)?.current?.Open(media);
-						});
+				Flow.media.selectMultiple({filter: 'image'}).then(async function (mediaList) {
+					for (let media of mediaList) {
+						if (media?.base64) {
+							let modalId=await $this.OpenEditorWithImage(null);
+							await $this.m_editorRefs.get(modalId)?.current?.Open(media);
+						}
 					}
 				}).catch(function (error) {
 					console.log('Media selection interaction finished:', error);
