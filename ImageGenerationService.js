@@ -531,8 +531,6 @@ var ImageGenerationService=Function.extend(FlowImageService, function () {
 			generatedPanels.fill(null);
 		}
 	};
-	_['private'].BaseGenerate=_['public'].Generate;
-	_['private'].m_activeGeneration=null;
 
 	_['public'].CancelGeneration=function () {
 		let cancellation=_(this).m_activeGeneration;
@@ -542,8 +540,9 @@ var ImageGenerationService=Function.extend(FlowImageService, function () {
 		cancellation.cancelled=true;
 		cancellation.notify();
 	};
-	'@@override';
 
+	_['private'].BaseGenerate=_['public'].Generate;
+	'@@override'
 	_['public'].Generate=async function (x, options) {
 		let $this=_(this);
 		let resolution=options.Resolution||'Default';
@@ -574,4 +573,6 @@ var ImageGenerationService=Function.extend(FlowImageService, function () {
 			}
 		}
 	};
+
+	_['private'].m_activeGeneration=null;	
 });
