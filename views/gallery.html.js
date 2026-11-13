@@ -16,15 +16,15 @@ var galleryTemplate=`
 		</button>
 	
 		<button type="button" class="w-9 h-9 rounded-xl bg-white text-black hover:bg-zinc-200 flex items-center justify-center cursor-pointer" aria-label="Open image from Flow" title="Open image from Flow" data-action="open">
-			<span class="material-symbols-outlined text-[18px]">add_photo_alternate</span>
+			<span class="material-symbols-outlined text-[18px]">photo_library</span>
 		</button>
 
 		<button type="button" class="w-9 h-9 rounded-xl bg-white text-black hover:bg-zinc-200 flex items-center justify-center cursor-pointer" aria-label="Load image from this device" title="Load image from this device" data-action="load" >
-			<span class="material-symbols-outlined text-[18px]">folder_open</span>
+			<span class="material-symbols-outlined text-[18px]">file_open</span>
 		</button>
 
 		<button type="button" class="w-9 h-9 rounded-xl bg-white text-black hover:bg-zinc-200 flex items-center justify-center cursor-pointer" aria-label="New canvas" title="New canvas" data-action="new-canvas" >
-			<span class="material-symbols-outlined text-[18px]">brush</span>
+			<span class="material-symbols-outlined text-[18px]">new_window</span>
 		</button>
 	</div>
 </header>
